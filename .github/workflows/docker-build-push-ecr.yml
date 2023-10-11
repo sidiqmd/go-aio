@@ -1,0 +1,53 @@
+name: Build and Push Docker Image to Amazon ECR
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  AWS_REGION: ap-southeast-1
+  ECR_REGISTRY: 697559720460.dkr.ecr.ap-southeast-1.amazonaws.com
+  ECR_REPOSITORY_BE: todo-be
+  ECR_REPOSITORY_FE: todo-fe
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login_ecr
+        run: |
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
+
+      - name: Extract tag name
+        shell: bash
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "DOCKER_TAG=$(echo ${GITHUB_REF#refs/tags/v})" >> $GITHUB_ENV
+          else
+            echo "DOCKER_TAG=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          fi
+
+      - name: Build and push "todo-be" Docker image
+        run: |
+          docker build -t ${{ env.ECR_REPOSITORY_BE }}:${{ env.DOCKER_TAG }} -f backend/Dockerfile .
+          docker tag ${{ env.ECR_REPOSITORY_BE }}:${{ env.DOCKER_TAG }} ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_BE }}:${{ env.DOCKER_TAG }}
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_BE }}:${{ env.DOCKER_TAG }}
+
+      - name: Build and push "todo-fe" Docker image
+        run: |
+          docker build -t ${{ env.ECR_REPOSITORY_FE }}:${{ env.DOCKER_TAG }} -f backend/Dockerfile .
+          docker tag ${{ env.ECR_REPOSITORY_FE }}:${{ env.DOCKER_TAG }} ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_FE }}:${{ env.DOCKER_TAG }}
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_FE }}:${{ env.DOCKER_TAG }}

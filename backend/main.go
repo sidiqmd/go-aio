@@ -19,7 +19,6 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	// db = db
 
 	app := fiber.New()
 

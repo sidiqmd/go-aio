@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  todo-be:
+    image: todo-be
+    hostname: todo-be
+    networks:
+      - framework-net
+    environment:
+      - TZ=Asia/Kuala_Lumpur
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=todoDb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_SSLMODE=disable
+  
+  todo-fe:
+    image: todo-fe
+    hostname: todo-fe
+    networks:
+      - framework-net
+    environment:
+      - TZ=Asia/Kuala_Lumpur
+
+  db:
+    image: postgres:15.3-alpine
+    restart: always
+    ports:
+      - 5430:5432
+    networks:
+      - framework-net
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=todoDb
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  proxy:
+    image: nginx:alpine
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - framework-net
+    environment:
+      - TZ=Asia/Kuala_Lumpur
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf/:ro
+      - ./logs/nginx:/var/log/nginx
+
+networks:
+  framework-net:
+
+volumes:
+  db:
+    driver: local
