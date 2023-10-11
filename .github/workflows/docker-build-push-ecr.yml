@@ -48,6 +48,6 @@ jobs:
 
       - name: Build and push "todo-fe" Docker image
         run: |
-          docker build -t ${{ env.ECR_REPOSITORY_FE }}:${{ env.DOCKER_TAG }} -f backend/Dockerfile .
+          docker build -t ${{ env.ECR_REPOSITORY_FE }}:${{ env.DOCKER_TAG }} -f frontend/Dockerfile .
           docker tag ${{ env.ECR_REPOSITORY_FE }}:${{ env.DOCKER_TAG }} ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_FE }}:${{ env.DOCKER_TAG }}
           docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_FE }}:${{ env.DOCKER_TAG }}

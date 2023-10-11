@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   todo-be:
-    image: 697559720460.dkr.ecr.ap-southeast-1.amazonaws.com/todo-be:0.0.1
+    image: 697559720460.dkr.ecr.ap-southeast-1.amazonaws.com/todo-be:0.0.2
     hostname: todo-be
     networks:
       - framework-net
@@ -16,7 +16,7 @@ services:
       - DB_SSLMODE=disable
   
   todo-fe:
-    image: 697559720460.dkr.ecr.ap-southeast-1.amazonaws.com/todo-fe:0.0.1
+    image: 697559720460.dkr.ecr.ap-southeast-1.amazonaws.com/todo-fe:0.0.2
     hostname: todo-fe
     networks:
       - framework-net
