@@ -5,9 +5,9 @@ import (
 )
 
 type Todo struct {
-	ID        int    `db:"id"`
-	Title     string `db:"title"`
-	Completed bool   `db:"completed"`
+	ID        int    `db:"id" json:"id"`
+	Title     string `db:"title" json:"title"`
+	Completed bool   `db:"completed" json:"completed"`
 }
 
 // GetAllTodosHandler handles the GET /api/todos route
@@ -24,7 +24,7 @@ func getAllTodosHandler(c *fiber.Ctx) error {
 // GetAllTodo queries all Todo items from the database
 func getAllTodo() ([]Todo, error) {
 	todos := []Todo{}
-	err := db.Select(&todos, "SELECT id, title, completed FROM todos")
+	err := db.Select(&todos, "SELECT id, title, completed FROM todos ORDER BY id DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +161,9 @@ func deleteTodoHandler(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-	return c.SendStatus(fiber.StatusOK)
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
 }
 
 // DeleteTodoItem deletes a Todo item from the database

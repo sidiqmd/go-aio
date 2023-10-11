@@ -23,12 +23,14 @@ func main() {
 
 	app := fiber.New()
 
-	app.Get("/todos", getAllTodosHandler)
-	app.Get("/todos/:id", getTodoByIdHandler)
-	app.Post("/todos", createTodoHandler)
-	app.Put("/todos/:id", updateTodoHandler)
-	app.Patch("/todos/:id", toggleTodoCompletedHandler)
-	app.Delete("/todos/:id", deleteTodoHandler)
+	baseUrl := "/api/todo"
+
+	app.Get(baseUrl, getAllTodosHandler)
+	app.Get(baseUrl+"/:id", getTodoByIdHandler)
+	app.Post(baseUrl, createTodoHandler)
+	app.Put(baseUrl+"/:id", updateTodoHandler)
+	app.Patch(baseUrl+"/:id", toggleTodoCompletedHandler)
+	app.Delete(baseUrl+"/:id", deleteTodoHandler)
 
 	// Start the Fiber server
 	port := 8080
