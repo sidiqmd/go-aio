@@ -9,7 +9,7 @@ backend - this is where all the APIs are implemented.
 frontend - this is where all the UI is implemented.
 
 > **\*Note**:\*<br>
-> Check out live demo **[here](http://http://13.251.52.50/)**.
+> Check out live demo **[here](http://13.251.52.50/)**.
 
 ## Technology used
 
